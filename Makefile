@@ -18,6 +18,7 @@ HEADER = build/header.js
 VERSION = `cat package.json | grep version \
 														| grep -o '[0-9]\.[0-9]\.[0-9]\+'`
 DIST = dist/less-${VERSION}.js
+RHINO = dist/less-rhino-${VERSION}.js
 DIST_MIN = dist/less-${VERSION}.min.js
 
 less:
@@ -35,11 +36,22 @@ less:
 	@@echo "})(window);" >> ${DIST}
 	@@echo ${DIST} built.
 
+rhino:
+	@@mkdir -p dist
+	@@touch ${RHINO}
+	@@cat build/require-rhino.js\
+	      build/ecma-5.js\
+	      ${SRC}/parser.js\
+	      ${SRC}/functions.js\
+	      ${SRC}/tree/*.js\
+	      ${SRC}/tree.js\
+	      ${SRC}/rhino.js > ${RHINO}
+	@@echo ${RHINO} built.
+
 min: less
 	@@echo minifying...
 	@@cat ${HEADER} | sed s/@VERSION/${VERSION}/ > ${DIST_MIN}
-	@@java -jar build/compiler.jar\
-		     --js ${DIST} >> ${DIST_MIN}
+	@@uglifyjs ${DIST} >> ${DIST_MIN}
 
 clean:
 	git rm dist/*
