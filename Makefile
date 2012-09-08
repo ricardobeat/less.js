@@ -30,9 +30,11 @@ less:
 	      build/ecma-5.js\
 	      ${SRC}/parser.js\
 	      ${SRC}/functions.js\
+	      ${SRC}/colors.js\
 	      ${SRC}/tree/*.js\
 	      ${SRC}/tree.js\
-	      ${SRC}/browser.js >> ${DIST}
+	      ${SRC}/browser.js\
+	      build/amd.js >> ${DIST}
 	@@echo "})(window);" >> ${DIST}
 	@@echo ${DIST} built.
 
@@ -43,6 +45,7 @@ rhino:
 	      build/ecma-5.js\
 	      ${SRC}/parser.js\
 	      ${SRC}/functions.js\
+	      ${SRC}/colors.js\
 	      ${SRC}/tree/*.js\
 	      ${SRC}/tree.js\
 	      ${SRC}/rhino.js > ${RHINO}
@@ -50,8 +53,12 @@ rhino:
 
 min: less
 	@@echo minifying...
-	@@cat ${HEADER} | sed s/@VERSION/${VERSION}/ > ${DIST_MIN}
-	@@uglifyjs ${DIST} >> ${DIST_MIN}
+	@@uglifyjs ${DIST} > ${DIST_MIN}
+	@@echo ${DIST_MIN} built.
+
+server: less
+	cp dist/less-${VERSION}.js test/html/
+	cd test/html && python -m SimpleHTTPServer
 
 clean:
 	git rm dist/*

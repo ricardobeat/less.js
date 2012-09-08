@@ -50,3 +50,39 @@
 #00ff00 {
   color: hsl(120, 100%, 50%);
 }
+
+.lightenblue {
+    color: lighten(blue, 10%);
+}
+
+.darkenblue {
+    color: darken(blue, 10%);
+}
+
+.unknowncolors {
+    color: blue2;
+    border: 2px solid superred;
+}
+
+.transparent {
+    color: transparent;
+    background-color: rgba(0, 0, 0, 0);
+}
+#alpha {
+    @colorvar: rgba(150, 200, 150, 0.7);
+    #fromvar {
+        opacity: alpha(@colorvar);
+    }
+    #short {
+        opacity: alpha(#aaa);
+    }
+    #long {
+        opacity: alpha(#bababa);
+    }
+    #rgba {
+        opacity: alpha(rgba(50, 120, 95, 0.2));
+    }
+    #hsl {
+        opacity: alpha(hsl(120, 100%, 50%));
+    }
+}
