@@ -21,6 +21,8 @@ DIST = dist/less-${VERSION}.js
 RHINO = dist/less-rhino-${VERSION}.js
 DIST_MIN = dist/less-${VERSION}.min.js
 
+browser-prepare: DIST := test/browser/less.js
+
 less:
 	@@mkdir -p dist
 	@@touch ${DIST}
@@ -37,6 +39,15 @@ less:
 	      build/amd.js >> ${DIST}
 	@@echo "})(window);" >> ${DIST}
 	@@echo ${DIST} built.
+	
+browser-prepare: less
+	node test/browser-test-prepare.js
+	
+browser-test: browser-prepare
+	phantomjs test/browser/phantom-runner.js
+
+browser-test-server: browser-prepare
+	phantomjs test/browser/phantom-runner.js --no-tests
 
 rhino:
 	@@mkdir -p dist
@@ -56,21 +67,14 @@ min: less
 	@@uglifyjs ${DIST} > ${DIST_MIN}
 	@@echo ${DIST_MIN} built.
 
-server: less
-	cp dist/less-${VERSION}.js test/html/
-	cd test/html && python -m SimpleHTTPServer
-
-clean:
-	git rm dist/*
-
-dist: clean min
+dist: min rhino
 	git add dist/*
 	git commit -a -m "(dist) build ${VERSION}"
 	git archive master --prefix=less/ -o less-${VERSION}.tar.gz
 	npm publish less-${VERSION}.tar.gz
 
 stable:
-	npm tag less ${VERSION} stable
+	npm tag less@${VERSION} stable
 
 
 .PHONY: test benchmark
