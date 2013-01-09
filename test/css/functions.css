@@ -72,6 +72,8 @@
   mix-0: #ffff00;
   mix-100: #ff0000;
   mix-weightless: #ff8000;
+  pick: 3px;
+  pick3: 2em;
 }
 #built-in .is-a {
   color: true;
